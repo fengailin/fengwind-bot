@@ -1,0 +1,81 @@
+{
+    "name": "趁你还年轻",
+    "id": 28160015,
+    "pst": 0,
+    "t": 0,
+    "ar": [
+      {
+        "id": 861777,
+        "name": "华晨宇",
+        "tns": [],
+        "alias": []
+      }
+    ],
+    "alia": ["电影《等风来》推广曲"],
+    "pop": 95.0,
+    "st": 0,
+    "rt": "",
+    "fee": 8,
+    "v": 34,
+    "crbt": null,
+    "cf": "",
+    "al": {
+      "id": 2732554,
+      "name": "趁你还年轻",
+      "picUrl": "http://p1.music.126.net/PrcPDaaGiaMuggwWLAvQdA==/5852700394705149.jpg",
+      "tns": [],
+      "pic": 5852700394705149
+    },
+    "dt": 209975,
+    "h": {
+      "br": 320000,
+      "fid": 0,
+      "size": 8402068,
+      "vd": -52394.0
+    },
+    "m": {
+      "br": 192000,
+      "fid": 0,
+      "size": 5041258,
+      "vd": -49889.0
+    },
+    "l": {
+      "br": 128000,
+      "fid": 0,
+      "size": 3360853,
+      "vd": -48468.0
+    },
+    "sq": {
+      "br": 1019601,
+      "fid": 0,
+      "size": 26761387,
+      "vd": -52370.0
+    },
+    "hr": null,
+    "a": null,
+    "cd": "1",
+    "no": 1,
+    "rtUrl": null,
+    "ftype": 0,
+    "rtUrls": [],
+    "djId": 0,
+    "copyright": 0,
+    "s_id": 0,
+    "mark": 17179877888,
+    "originCoverType": 0,
+    "originSongSimpleData": null,
+    "tagPicList": null,
+    "resourceState": true,
+    "version": 34,
+    "songJumpInfo": null,
+    "entertainmentTags": null,
+    "awardTags": null,
+    "single": 0,
+    "noCopyrightRcmd": null,
+    "rtype": 0,
+    "rurl": null,
+    "mst": 9,
+    "cp": 636011,
+    "mv": 0,
+    "publishTime": 1387900800007
+  }

@@ -11,13 +11,13 @@ from pathlib import Path
 import requests,httpx
 from .apis import *
 from ..logger import *
-from ..config import cache_path,cloudmusic
+from ..config import cache_path,config_data
 
 import asyncio
 import aiofiles
 import traceback
 
-save_path = cache_path/ 'cloudmusic' 
+save_path = cache_path/ 'config_data'
 EAPI_KEY = b"e82ckenh8dichen8"
 EAPI_CRYPTOR = AES.new(EAPI_KEY, AES.MODE_ECB)
 def eapi_encrypt(path, params):
@@ -71,7 +71,7 @@ def get_epath(provided_path):
     full_url = f"https://interface.music.163.com/eapi/{modified_path}"
     return full_url
 
-cookies = cloudmusic['cookies']
+cookies = config_data['cloudmusic']['cookies']
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36 Chrome/91.0.4472.164 NeteaseMusicDesktop/3.0.6.202460',
     'mconfig-info': '{"IuRPVVmc3WWul9fT":{"version":501760,"appver":"3.0.6.202460"}}',
@@ -84,7 +84,7 @@ headers = {
     'accept-language': 'en-US,en;q=0.9',
     'Content-Type': 'application/x-www-form-urlencoded',
 }
-header = cloudmusic['header']
+header = config_data['cloudmusic']['header']
 async def request(path,params):
     try:
         
@@ -93,13 +93,13 @@ async def request(path,params):
         data = {
     'params': params_enc,}
         url = get_epath(path)
-        log_plugin(f"请求地址: {url}")
+        #log_plugin(f"请求地址: {url}")
         response = requests.post(url, cookies=cookies, headers=headers, data=data)
         data_hex = response.content
         data_dec = data_decrypt(data_hex)
         return data_dec
     except Exception as e:
-        log_exception(f"请求出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
+        log_exception(f"请求url: {path} \n请求体: {params} \n请求出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
         return None
 
 async def get_song_url(song_id):
@@ -115,11 +115,11 @@ async def get_song_url(song_id):
         data = await request(song_url,params)
         song_data = data.get('data', [])[0]['url']
         song_data = re.sub(r'(\?|&)authSecret=[^&]*(&|$)', r'\1', song_data)
-        log_plugin(f"获取歌曲id: {song_id} 的地址: {song_data}")
+        #log_plugin(f"获取歌曲id: {song_id} 的地址: {song_data}")
     #log_info(song_data)
         return song_data
     except Exception as e:
-        log_exception(f"获取歌曲地址出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
+        log_exception(f"获取歌曲id: {song_id} 地址出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
         return None
 async def get_playlist_detail(playlist_id):
     try:
@@ -154,10 +154,10 @@ async def get_playlist_detail(playlist_id):
             #文件名
         #log_info(f"名字 {name} id {track_id}")
         #log_info(result)
-        log_plugin(f"获取歌单id: {playlist_id} 的详情")
+        #log_plugin(f"获取歌单id: {playlist_id} 的详情")
         return list(result),len(list(result))
     except Exception as e:
-        log_exception(f"获取歌单详情出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
+        log_exception(f"获取歌单id: {playlist_id} 详情出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
         return None
 
 async def upload_playlist(file_name, path, playlist_id):
@@ -165,9 +165,9 @@ async def upload_playlist(file_name, path, playlist_id):
         
             # 等待文件写入完成后再进行上传
 
-        base_url = cloudmusic['webdav_base_url']
-        webdav_username = cloudmusic['webdav_username']
-        webdav_password = cloudmusic['webdav_password']
+        base_url = config_data['cloudmusic']['webdav_base_url']
+        webdav_username = config_data['cloudmusic']['webdav_username']
+        webdav_password = config_data['cloudmusic']['webdav_password']
         remote_path = f"{base_url}{playlist_id}/"  # 替换为实际的远程路径
         url = f"{remote_path}{file_name}.mp3"  # 替换为实际的远程路径
         headers_upload = {
@@ -184,21 +184,21 @@ async def upload_playlist(file_name, path, playlist_id):
             async with httpx.AsyncClient() as client:  # 创建一个异步client
                 response = await client.put(url=url, headers=headers_upload, content=file_content,timeout=None)
                 if response.status_code == 201 or response.status_code == 302:
-                    log_plugin(f"上传歌单歌曲成功: {path}")
+                    log_plugin(f"上传歌单id: {playlist_id} 歌曲成功: {path}")
                 else:
-                    log_exception(f"上传歌单歌曲失败: {path}\n{response}")
+                    log_exception(f"上传歌单id: {playlist_id} 歌曲失败: {path}\n{response}")
 
     except Exception as e:
-        log_exception(f"上传歌单歌曲出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
-        
+        log_exception(f"上传歌单id: {playlist_id} 歌曲出错: {str(e)}\n{traceback.format_exc()}\n{traceback.format_exc()}")
+         
 async def download_playlist(playlist_id,song_id, file_name,name,artists="",picurl="",album="", ):
     try:
         new_filepath = save_path /  f'{playlist_id}' /f"{file_name}.mp3"
         photo = httpx.get(picurl)
         if new_filepath.exists() and new_filepath.stat().st_size > 3 * 1024 * 1024:
-            
+         #大于3mb跳过流程   
         
-            log_plugin(f"下载歌单歌曲 {file_name} 已存在且大小大于3MB，跳过下载流程")
+            log_info(f"下载歌单id: {playlist_id} 歌曲 {file_name} 跳过下载流程")
             
         else:
             new_filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -212,7 +212,7 @@ async def download_playlist(playlist_id,song_id, file_name,name,artists="",picur
             
                 async with aiofiles.open(new_filepath, 'wb') as f:
                     await f.write(response.content)
-                log_plugin(f"下载歌单歌曲路径: {new_filepath}")
+                log_plugin(f"下载歌单id: {playlist_id} 歌曲路径: {new_filepath}")
         while True:
             initial_size = os.path.getsize(new_filepath)
             await asyncio.sleep(0.5)
@@ -239,7 +239,7 @@ async def download_playlist(playlist_id,song_id, file_name,name,artists="",picur
 # 保存修改后的MP3文件
                 audiofile.tag.save()
 
-                log_plugin(f"已成功添加 {file_name} 的元信息")
+                #log_info(f"已成功添加 {file_name} 的元信息")
                 break
 
         await upload_playlist(file_name=file_name,path=new_filepath,playlist_id=playlist_id)
@@ -250,7 +250,7 @@ async def download_playlist(playlist_id,song_id, file_name,name,artists="",picur
 
 async def playlist_handler(song_dict_list, playlist_id):
     try:
-        log_plugin(f"开始歌单id: {playlist_id}的处理")
+        log_plugin(f"开始歌单id: {playlist_id} 的处理")
         #log_plugin(f"song_dict_list 类型: {type(song_dict_list)}, 内容: {song_dict_list}")
         for song_dict in song_dict_list:
             #log_plugin(f"song_dict 类型: {type(song_dict)}, 内容: {song_dict}")

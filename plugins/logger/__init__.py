@@ -53,7 +53,7 @@ def log_exception(exception: str):
         plugin_name = os.path.basename(os.path.dirname(caller_module.__file__))
         logger.opt(colors=True).error(f"<c><u>{plugin_name}</u></c> | {exception}")
         exception = exception.replace("'", "").replace('"', '')
-        sql = "INSERT INTO exception_logs (plugin_name, exception) VALUES ('%s', '%s')" % (plugin_name, exception)
+        sql = "INSERT INTO logs_exception (plugin_name, exception) VALUES ('%s', '%s')" % (plugin_name, exception)
         execute_sql(sql)
     except Exception as e:
         logger.opt(colors=True).error(f"记录插件异常出错: {e}")
@@ -71,7 +71,7 @@ def log_user(event:GroupMessageEvent,operation: str):
         group_id = event.group_id
         logger.opt(colors=True).info(f"<c><u>{plugin_name}</u></c> | {nickname}({user_id}) 在 群 {group_id} 进行了 操作\ {operation}")
         operation = operation.replace("'", "").replace('"', '')
-        sql = "INSERT INTO user_logs (user_id, group_id, operation) VALUES ('%s','%s','%s')" % (user_id, group_id, operation)
+        sql = "INSERT INTO logs_user (user_id, group_id, operation) VALUES ('%s','%s','%s')" % (user_id, group_id, operation)
         execute_sql(sql)
     except Exception as e:
         logger.opt(colors=True).error(f"记录用户日志出错: {e}")
@@ -85,7 +85,7 @@ def log_plugin(operation: str):
         plugin_name = os.path.basename(os.path.dirname(caller_module.__file__))
         logger.opt(colors=True).info(f"<c><u>{plugin_name}</u></c> | {operation}")
         operation = operation.replace("'", "").replace('"', '')
-        sql = "INSERT INTO plugin_logs (plugin_name, operation) VALUES ('%s', '%s')" % (plugin_name,operation)
+        sql = "INSERT INTO logs_plugin (plugin_name, operation) VALUES ('%s', '%s')" % (plugin_name,operation)
         execute_sql(sql)
     except Exception as e:
         logger.opt(colors=True).error(f"记录插件日志出错: {e}")

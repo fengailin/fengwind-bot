@@ -1,4 +1,4 @@
-from ..config import siyuan
+from ..config import config_data
 import httpx
 import datetime
 import random
@@ -12,10 +12,10 @@ tracemalloc.start()
 client = httpx.AsyncClient()
 
 
-host = siyuan['host']
-token = siyuan['token']
-notebook = siyuan['notebook']
-https = siyuan['https']
+host = config_data['siyuan']['host']
+token = config_data['siyuan']['token']
+notebook = config_data['siyuan']['notebook']
+https = config_data['siyuan']['https']
 if https == True:
     address = f'https://{host}'
 else:

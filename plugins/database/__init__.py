@@ -1,5 +1,5 @@
 import pymysql
-from ..config import mysql_config
+from ..config import config_data
 #from ..Utils import plugin_log
 from pymysql import cursors
 import nonebot
@@ -9,10 +9,10 @@ import datetime
 __plugin_name__ = '数据库'
 __plugin_usage__ = '提供数据库连接'
 
-host = mysql_config['host']
-user = mysql_config['user']
-password = mysql_config['password']
-database = mysql_config['database']
+host = config_data['mysql_config']['host']
+user = config_data['mysql_config']['user']
+password = config_data['mysql_config']['password']
+database = config_data['mysql_config']['database']
 
 mysql = pymysql.connect(host=host,
                          user=user,
@@ -33,6 +33,11 @@ mysql = pymysql.connect(host=host,
 
 
 def execute_sql(sqlcontent):
+    """
+    sql执行函数
+    :param sqlcontent: 需要执行的sql语句
+    :return: sql执行结果
+    """
     try:
         
         cursor = mysql.cursor()

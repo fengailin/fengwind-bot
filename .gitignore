@@ -143,5 +143,11 @@ dmypy.json
 /plugins/禁用
 *.lnk
 *.bat
-*.env*
-/.*
+
+
+# 忽略所有.env.xxx文件
+*.dev
+*.prod
+
+# 忽略根目录下的所有.xxx文件夹
+/.xxx/

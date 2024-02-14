@@ -7,7 +7,7 @@ import httpx
 import mimetypes
 from pathlib import Path
 from .utils import *
-from ..config import siyuan,cache_path
+from ..config import config_data,cache_path
 from ..logger import *
 __plugin_meta__ = nonebot.plugin.PluginMetadata(
     name='思源',
@@ -42,7 +42,7 @@ async def collect_daily(data):
 collect = on_message(priority=9999)
 @collect.handle()
 async def collect_handle(group_event: GroupMessageEvent,event: MessageEvent):
-    if group_event.group_id in siyuan['collect_group']:
+    if group_event.group_id in config_data['siyuan']['collect_group']:
         current_time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         message = str(event.get_message())
         #await collect.send(str(event.get_message()))
@@ -116,7 +116,7 @@ async def insert_handler(data: Message = CommandArg()):
         previous_id = await getDoc(file_id)
         block_id = await insertBlock(data=current_time,previousID=previous_id)
         block_id2 = await insertBlock(data=str(data),previousID=block_id)
-        log_user("siyuan")
+        #log_user("config_data['siyuan']")
         await insert.send(f"插入成功。子块id:{block_id2}")
     else:
         # 在这里添加创建文档的逻辑，比如调用工具函数创建文档

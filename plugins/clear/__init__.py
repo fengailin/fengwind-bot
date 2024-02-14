@@ -33,7 +33,7 @@ async def _(event:GroupMessageEvent,data: Message = CommandArg()):
                 os.rmdir(dir_path)
                 number = number +1
         log_plugin(f"清理缓存: {number} 个文件")
-        await clear.send(f'清理完成\n共清理{number}个文件')
+        await clear.send(f'清理完成\n共清理 {number} 个文件')
     except Exception as e:
         log_exception(f"清理缓存错误:{str(e)}")
     

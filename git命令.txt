@@ -1,0 +1,2 @@
+git checkout -f main
+强行从远程拉取

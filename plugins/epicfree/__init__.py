@@ -89,6 +89,6 @@ async def epic_subscribe():
             log_info("群")
             await cast(Bot,bot).send_group_msg(group_id=group, messages=msg_list)
         for private in subscriber["私聊"]:
-            await Bot.send_private_msg(user_id=private, messages=msg_list)
+            await cast(Bot,bot).send_private_msg(user_id=private, messages=msg_list)
     except Exception as e:
         logger.error(f"Epic 限免游戏资讯定时任务出错 {e.__class__.__name__}\n{format_exc()}")

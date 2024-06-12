@@ -11,7 +11,7 @@ from .handler import *
 __plugin_meta__ = PluginMetadata(
     name='帮助',
     description='从文件中查找帮助',
-    usage='help 全部插件帮助 help [插件名] 特定插件帮助',
+    usage='help 全部插件帮助 \ help [插件名] 特定插件帮助',
     extra={'prefix':'插件','version': '1.2.0'}
 )
 
@@ -19,7 +19,7 @@ __plugin_meta__ = PluginMetadata(
 # 创建一个NoneBot命令
 search_plugins = on_command("help", aliases={"帮助"}, priority=5)
 """help 提供所有插件的帮助
-  help [插件名] 加上参数可获取单个插件帮助 
+help [插件名] 加上参数可获取单个插件帮助 
 """
 
 

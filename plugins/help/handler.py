@@ -2,11 +2,17 @@ from ..config import root as root_path
 
 import os
 import re
+from pathlib import Path
 
+# Assuming root_path is defined elsewhere
 plugin_dir = root_path / 'plugins'
 
 # 定义不检查的文件夹
 exclude_dirs = {"__pycache__", "禁用"}
+
+def format_multiline_string(s: str) -> str:
+    """格式化多行字符串，添加两个空格对齐符号"""
+    return '\n'.join('  ' + line.strip() for line in s.split('\n'))
 
 async def get_all_plugins_detail():
     """获得所有插件的信息"""
@@ -55,7 +61,7 @@ async def get_all_plugins_detail():
                         if command_name not in plugin_info[plugin_name]:
                             plugin_info[plugin_name][command_name] = {
                                 "aliases": aliases,
-                                "doc_comments": doc_comments
+                                "doc_comments": format_multiline_string(doc_comments)
                             }
 
     # 生成输出信息
@@ -74,9 +80,6 @@ async def get_all_plugins_detail():
 async def get_single_plugin_detail(name: str):
     """获得特定插件信息"""
     plugin_info = {}
-
-    plugin_dir = '.'  # Specify your plugin directory
-    exclude_dirs = []  # Specify any directories to exclude
 
     # 遍历目录
     for root, dirs, files in os.walk(plugin_dir):
@@ -102,17 +105,17 @@ async def get_single_plugin_detail(name: str):
                             continue
 
                         plugin_info = {
-                            'description': description,
-                            'usage': usage,
+                            'description': format_multiline_string(description),
+                            'usage': format_multiline_string(usage),
                             'extra': extra,
                             'commands': {}
                         }
 
                         # 查找on_command定义
                         command_pattern = re.compile(
-                        r'on_command\s*\(\s*["\'](\w+)["\']\s*(?:,\s*aliases\s*=\s*\{([^}]*)\})?\s*(?:,\s*priority\s*=\s*\d+)?\s*(?:,\s*block\s*=\s*(?:True|False))?\s*(?:,\s*permission\s*=\s*\w+)?\s*\)',
-                        re.DOTALL
-                    )
+                            r'on_command\s*\(\s*["\'](\w+)["\']\s*(?:,\s*aliases\s*=\s*\{([^}]*)\})?\s*(?:,\s*priority\s*=\s*\d+)?\s*(?:,\s*block\s*=\s*(?:True|False))?\s*(?:,\s*permission\s*=\s*\w+)?\s*\)',
+                            re.DOTALL
+                        )
                         commands = command_pattern.findall(content)
                         for command in commands:
                             command_name = command[0]
@@ -123,7 +126,7 @@ async def get_single_plugin_detail(name: str):
                             if command_name not in plugin_info['commands']:
                                 plugin_info['commands'][command_name] = {
                                     "aliases": aliases,
-                                    "doc_comments": doc_comments
+                                    "doc_comments": format_multiline_string(doc_comments)
                                 }
 
     if not plugin_info:

@@ -10,12 +10,13 @@ import os
 from nonebot.plugin import PluginMetadata
 __plugin_meta__ = PluginMetadata(
     name='清理',
-    description='清理缓存',
-    usage='',
+    description='顾名思义，清理cache目录下的文件',
+    usage='ql 清理',
     extra={'prefix':'插件','version': '1.1.0'}
 )
 clear = on_command("ql", aliases={'清理缓存','清理'}, priority=10, block=True,permission=SuperUser)
 """清理cache目录中产生的缓存文件"""
+
 @clear.handle()
 async def _(event:GroupMessageEvent,data: Message = CommandArg()):
     log_user(event=event,operation="清理缓存")

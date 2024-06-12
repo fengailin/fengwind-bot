@@ -7,7 +7,7 @@ __plugin_meta__ = PluginMetadata(
     name='文字转图片',
     description='长文字转图片',
     usage='',
-    extra={'prefix': '功能', 'version': '1.0.0'}
+    extra={'prefix': '功能', 'version': '1.1.1'}
 )
 plugin_name = __plugin_meta__.name
 plugin_version = __plugin_meta__.extra.get('version')

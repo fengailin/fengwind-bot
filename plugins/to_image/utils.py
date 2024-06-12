@@ -12,7 +12,7 @@ def generate_image(text: str,
                    text_color: tuple = (0, 0, 0), 
                    title_color: tuple = (0, 0, 0),  # 标题颜色
                    description_color: tuple = (128, 128, 128),  # 描述颜色
-                   watermark: str = "fengwind-bot 插件 to_image 1.1",  # 自定义水印文字
+                   watermark: str = "fengwind-bot 插件 to_image 1.1.1",  # 自定义水印文字
                    watermark_font_size: int = 12,  # 水印文字大小
                    font_path = resource_path / 'to_image' / '汉仪润圆-65W.ttf',
                    font_size: int = 24,
@@ -83,7 +83,7 @@ def generate_image(text: str,
     # 绘制描述
     if description:
         draw.text((margin, y), description, fill=description_color, font=description_font)
-        y += description_height + 10  # 描述和正文之间添加10px间隔
+        y += description_height + 20  # 描述和正文之间添加20px间隔
 
     # 绘制每一行文字
     for line in lines:

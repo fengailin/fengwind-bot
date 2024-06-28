@@ -109,8 +109,12 @@ async def get_gacha(bot_id: str, user_id: str, sr_uid: str) -> Optional[UserGach
     Get gacha from database
     """
     try:
+        #record = await UserGachaLog.filter(
+        #    Q(bot_id=bot_id) & Q(user_id=user_id) & Q(sr_uid=sr_uid)
+        #).first()
+        # 这里的屎以后再修
         record = await UserGachaLog.filter(
-            Q(bot_id=bot_id) & Q(user_id=user_id) & Q(sr_uid=sr_uid)
+            Q(user_id=user_id) & Q(sr_uid=sr_uid)
         ).first()
         return record
     except Exception as e:

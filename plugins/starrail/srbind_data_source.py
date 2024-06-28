@@ -50,7 +50,9 @@ async def del_user_srbind(bot_id: str, user_id: str, sr_uid: str) -> None:
             await user.delete(using_db=session)
 
 async def get_user_srbind(bot_id: str, user_id: str) -> list[UserBind]:
-    return await UserBind.filter(bot_id=bot_id, user_id=user_id).all()
+    return await UserBind.filter(user_id=user_id).all()
+    #return await UserBind.filter(bot_id=bot_id, user_id=user_id).all()
+    # 这里的屎以后再修
 
 def generate_qrcode(url: str) -> BytesIO:
     qr = qrcode.QRCode(  # type: ignore

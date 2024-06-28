@@ -226,7 +226,9 @@ async def set_user_srpanel(panel: UserPanel) -> None:
 async def get_user_srpanel(
     bot_id: str, user_id: str, sr_uid: str, cid: str
 ) -> Optional[UserPanel]:
-    return await UserPanel.filter(bot_id=bot_id, user_id=user_id, sr_uid=sr_uid, cid=cid).first()
+    #return await UserPanel.filter(bot_id=bot_id, user_id=user_id, sr_uid=sr_uid, cid=cid).first()
+    return await UserPanel.filter(user_id=user_id, sr_uid=sr_uid, cid=cid).first()
+#屎
 
 
 async def get_srpanel_player(

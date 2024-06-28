@@ -1,0 +1,101 @@
+from nonebot.log import logger
+from nonebot import on_command
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent,MessageSegment,Message
+from nonebot.plugin import PluginMetadata
+
+from .mys_api import MysApi
+from .srbind import get_user_srbind
+from .srbind_cookie import (  # set_cookie_expire,
+        set_user_fp,
+        get_user_cookie_with_fp,
+    )
+
+from .srinfo_data_source import get_srinfo_img
+
+__plugin_meta__ = PluginMetadata(
+    name="StarRailInfo",
+    description="崩坏：星穹铁道账号信息查询",
+    usage="""\
+查看信息: srinfo
+""",
+    extra={
+        "version": "1.0",
+        "srhelp": """\
+查看信息: srinfo
+""",
+    },
+)
+
+
+error_code_msg = {
+    1034: "查询遇验证码",
+    10001: "绑定cookie失效，请重新绑定",
+    -10001: "请求出错，请稍后重试",
+}
+
+srinfo = on_command(
+    "srinfo", aliases={"星铁信息", "星铁账号信息"}, priority=2, block=True
+)
+
+
+@srinfo.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    user_list = await get_user_srbind(bot.self_id, event.get_user_id())
+    if not user_list:
+        msg = "未绑定SRUID，请使用`星铁扫码绑定`或`srqr`命令扫码绑定"
+
+        await srinfo.finish(msg)
+    sr_uid = user_list[0].sr_uid
+    mys_id = user_list[0].mys_id
+    cookie, device_id, device_fp = await get_user_cookie_with_fp(
+        bot.self_id, event.get_user_id(), sr_uid
+    )
+    if not mys_id or not cookie:
+        msg = "未绑定cookie，请使用`星铁扫码绑定`或`srqr`命令扫码绑定，或使用`星铁ck`或`srck`命令绑定"
+        await srinfo.finish(msg)
+    mys_api = MysApi()
+    if not device_id or not device_fp:
+        device_id, device_fp = await mys_api.init_device()
+    logger.info(f"正在查询SRUID『{sr_uid}』信息")
+    mys_api = MysApi(cookie, device_id, device_fp)
+    sr_basic_info = await mys_api.get_game_basic_info(role_uid=sr_uid, mys_id=mys_id)
+    if isinstance(sr_basic_info, int):
+        if sr_basic_info in error_code_msg:
+            msg = error_code_msg[sr_basic_info]
+        else:
+            msg = f"查询失败，错误代码 {sr_basic_info}"
+        await srinfo.finish(msg)
+    sr_index = await mys_api.call_mihoyo_api(api="sr_index", role_uid=sr_uid)
+    if isinstance(sr_index, int):
+        if sr_index in error_code_msg:
+            msg = error_code_msg[sr_index]
+        else:
+            msg = f"查询失败，请稍后重试（错误代码 {sr_index}）"
+        await srinfo.finish(msg)
+    try:
+        avatar_id = sr_index["avatar_list"][0]["id"] if sr_index else None
+    except (KeyError, IndexError):
+        avatar_id = None
+    # cookie expire if avatar_id is None
+    if not avatar_id:
+        # await set_cookie_expire(bot.self_id, event.get_user_id(), sr_uid)
+        # logger.info(f"已删除SRUID『{sr_uid}』的过期cookie")
+        msg = "疑似cookie失效，请重新使用`srck [cookie]`绑定或`srqr`扫码绑定"
+        await srinfo.finish(msg)
+    sr_avatar_info = await mys_api.call_mihoyo_api(
+        api="sr_avatar_info", role_uid=sr_uid, avatar_id=avatar_id
+    )
+    if isinstance(sr_avatar_info, int):
+        sr_avatar_info = None
+    if not sr_basic_info or not sr_index:
+        msg = "查询失败，请稍后重试"
+        await srinfo.finish(msg)
+    if sr_avatar_info and (new_fp := sr_avatar_info.get("new_fp")):
+        await set_user_fp(bot.self_id, event.get_user_id(), sr_uid, device_id, new_fp)
+    logger.info(f"正在绘制SRUID『{sr_uid}』信息图片")
+    img = await get_srinfo_img(sr_uid, sr_basic_info, sr_index, sr_avatar_info)
+    if img:
+        await srinfo.finish(MessageSegment.image(img))
+    else:
+        msg = "图片绘制失败，请稍后重试"
+    await srinfo.finish(msg)

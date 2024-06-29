@@ -31,6 +31,8 @@ from .srres_model.characters import (
     CharacterSkillTreeIndex,
 )
 
+from ..logger import log_info,log_warning
+
 plugin_data_dir = resource_path / "srres"
 index_dir = plugin_data_dir / "index"
 font_dir = plugin_data_dir / "font"
@@ -122,7 +124,7 @@ class StarRailRes:
                     resp.raise_for_status()
                     return resp.content
                 except Exception as e:
-                    logger.warning(f"Error downloading {url}, retry {i}/3: {e}")
+                    log_warning(f"Error downloading {url}, retry {i}/3: {e}")
                     await asyncio.sleep(2)
             logger.error(f"Error downloading {url}, all attempts failed.")
             return None
@@ -390,11 +392,11 @@ class StarRailRes:
                     continue
                 with open(index_dir / filename, "wb") as f:
                     f.write(data)
-        logger.info("索引文件检查完毕")
+        log_info("索引文件检查完毕")
         if status:
             self.reload()
         # 检查字体文件是否完整
-        logger.info("正在检查字体文件是否完整")
+        log_info("正在检查字体文件是否完整")
         if not font_dir.exists():
             font_dir.mkdir(parents=True)
         filename = FontFile
@@ -409,7 +411,7 @@ class StarRailRes:
             else:
                 with open(font_dir / filename, "wb") as f:
                     f.write(data)
-        logger.info("字体文件检查完毕")
+        log_info("字体文件检查完毕")
         return status
 
     async def download_guide(self, force: bool = False) -> bool:

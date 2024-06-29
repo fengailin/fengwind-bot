@@ -14,6 +14,7 @@ from nonebot.compat import model_dump, type_validate_python
 
 from ..config import config_data,data_path
 from ..orm import add_model
+from ..logger import log_info,log_warning
 
 add_model("plugins.starrail.srpanel_model")
 score_file = data_path / "score.json"
@@ -284,7 +285,7 @@ async def update_score_file() -> Optional[ScoreFile]:
     if not sr_score_data:
         if not score_file.exists():
             return None
-        logger.warning("Cannot get local score.json")
+        log_warning("Cannot get local score.json")
         with open(score_file, encoding="utf-8") as f:
             sr_score_data = json.load(f)
     score = {k: type_validate_python(ScoreItem, v) for k, v in sr_score_data.items()}
@@ -301,7 +302,7 @@ async def update_srpanel(bot_id: str, user_id: str, sr_uid: str) -> Optional[str
     try:
         parsed_data = type_validate_python(FormattedApiInfo, data)
     except (ValidationError, KeyError) as e:
-        logger.info(f"Can not parse: {data}, error: {e}")
+        log_info(f"Can not parse: {data}, error: {e}")
         return None
     player = parsed_data.player
     panel = UserPanel(

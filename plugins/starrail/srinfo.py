@@ -11,6 +11,7 @@ from .srbind_cookie import (  # set_cookie_expire,
     )
 
 from .srinfo_data_source import get_srinfo_img
+from ..logger import log_info,log_warning
 
 __plugin_meta__ = PluginMetadata(
     name="StarRailInfo",
@@ -56,7 +57,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     mys_api = MysApi()
     if not device_id or not device_fp:
         device_id, device_fp = await mys_api.init_device()
-    logger.info(f"正在查询SRUID『{sr_uid}』信息")
+    log_info(f"正在查询SRUID『{sr_uid}』信息")
     mys_api = MysApi(cookie, device_id, device_fp)
     sr_basic_info = await mys_api.get_game_basic_info(role_uid=sr_uid, mys_id=mys_id)
     if isinstance(sr_basic_info, int):
@@ -79,7 +80,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     # cookie expire if avatar_id is None
     if not avatar_id:
         # await set_cookie_expire(bot.self_id, event.get_user_id(), sr_uid)
-        # logger.info(f"已删除SRUID『{sr_uid}』的过期cookie")
+        # log_info(f"已删除SRUID『{sr_uid}』的过期cookie")
         msg = "疑似cookie失效，请重新使用`srck [cookie]`绑定或`srqr`扫码绑定"
         await srinfo.finish(msg)
     sr_avatar_info = await mys_api.call_mihoyo_api(
@@ -92,7 +93,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await srinfo.finish(msg)
     if sr_avatar_info and (new_fp := sr_avatar_info.get("new_fp")):
         await set_user_fp(bot.self_id, event.get_user_id(), sr_uid, device_id, new_fp)
-    logger.info(f"正在绘制SRUID『{sr_uid}』信息图片")
+    log_info(f"正在绘制SRUID『{sr_uid}』信息图片")
     img = await get_srinfo_img(sr_uid, sr_basic_info, sr_index, sr_avatar_info)
     if img:
         await srinfo.finish(MessageSegment.image(img))

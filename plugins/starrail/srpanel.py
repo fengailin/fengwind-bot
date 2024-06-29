@@ -11,6 +11,7 @@ from ..apscheduler import scheduler
 
 from .srres import srres
 from .srbind import get_user_srbind
+from ..logger import log_info,log_warning
 
 from .srpanel_get_img import get_srpanel_img
 from .srpanel_model import (
@@ -48,11 +49,11 @@ async def _():
     score_file = await update_score_file()
     if score_file:
         score = score_file
-        logger.info("遗器评分标准加载完成")
+        log_info("遗器评分标准加载完成")
     else:
         logger.error("遗器评分标准加载失败，请检查网络连接和插件配置")
     scheduler.add_job(update_score_file, "cron", day=1, id="srscore_update")
-    logger.info("遗器评分标准自动更新任务已添加")
+    log_info("遗器评分标准自动更新任务已添加")
 
 
 srsupdate = on_command(
@@ -96,7 +97,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = "未绑定SRUID，请使用`sruid [uid]`绑定或`srqr`扫码绑定"
         await srpu.finish(msg)
     sr_uid = user_list[0].sr_uid
-    logger.info(f"开始更新SRUID『{sr_uid}』角色面板")
+    log_info(f"开始更新SRUID『{sr_uid}』角色面板")
     msg = f"开始更新SRUID『{sr_uid}』角色面板"
     await srpu.send(msg)
     updated = await update_srpanel(bot.self_id, event.get_user_id(), sr_uid)
@@ -153,7 +154,7 @@ async def _(bot: Bot, event: GroupMessageEvent, regex_dict: dict = RegexDict()):
             img = await get_srpanel_img(player_info, info, score)
         except Exception as e:
             img = None
-            logger.warning(f"绘图出错：{e}")
+            log_warning(f"绘图出错：{e}")
             logger.exception(e)
     else:
         img = None

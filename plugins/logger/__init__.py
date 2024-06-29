@@ -74,3 +74,13 @@ def log_info(operation: str):
         # 从模块信息中获取插件名
     plugin_name = os.path.basename(os.path.dirname(caller_module.__file__))
     logger.opt(colors=True).info(f"<c><u>{plugin_name}</u></c> | {operation}")
+    
+def log_warning(operation: str):
+    operation = operation.replace("<", "\\<").replace(">", "\\>")
+        # 获取调用者的模块信息
+    current_frame = inspect.currentframe()
+    caller_module = inspect.getmodule(current_frame.f_back)
+        
+        # 从模块信息中获取插件名
+    plugin_name = os.path.basename(os.path.dirname(caller_module.__file__))
+    logger.opt(colors=True).warning(f"<c><u>{plugin_name}</u></c> | {operation}")

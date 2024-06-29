@@ -22,6 +22,7 @@ from .srbind_data_source import (
     get_user_srbind,
     set_user_srbind,
 )
+from ..logger import log_info,log_warning
 
 __plugin_meta__ = PluginMetadata(
     name="StarRailBind",
@@ -86,7 +87,7 @@ srqr = on_command(
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     sr_uid: str = arg.extract_plain_text().strip()
     if not sr_uid:
-        logger.info(f"开始查询『{event.get_user_id()}』的SRUID绑定状态")
+        log_info(f"开始查询『{event.get_user_id()}』的SRUID绑定状态")
         user_list = await get_user_srbind(bot.self_id, event.get_user_id())
         if user_list:
             uid_list_str = [str(user.sr_uid) for user in user_list]
@@ -98,7 +99,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
         if not uid:
             msg = "SRUID格式错误"
         else:
-            logger.info(f"开始为『{event.get_user_id()}』绑定SRUID『{uid.group()}』")
+            log_info(f"开始为『{event.get_user_id()}』绑定SRUID『{uid.group()}』")
             user = UserBind(
                 bot_id=bot.self_id,
                 user_id=str(event.get_user_id()),
@@ -241,7 +242,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     sr_uid: str = arg.extract_plain_text().strip()
     if not sr_uid:
-        logger.info(f"开始解绑『{event.get_user_id()}』的所有SRUID")
+        log_info(f"开始解绑『{event.get_user_id()}』的所有SRUID")
         user_list = await get_user_srbind(bot.self_id, event.get_user_id())
         if user_list:
             uid_list_str = [user.sr_uid for user in user_list]
@@ -259,7 +260,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
             uid_list = await get_user_srbind(bot.self_id, event.get_user_id())
             if uid_list:
                 if sr_uid in uid_list:
-                    logger.info(f"开始为『{event.get_user_id()}』解绑SRUID『{sr_uid}』")
+                    log_info(f"开始为『{event.get_user_id()}』解绑SRUID『{sr_uid}』")
                     await del_user_srbind(bot.self_id, event.get_user_id(), sr_uid)
                     msg = f"已解绑SRUID『{sr_uid}』"
                 else:
@@ -299,7 +300,7 @@ async def check_qrcode():
                 mys_api = MysApi()
                 status_data = await mys_api.check_login_qr(data)
                 if status_data is None:
-                    logger.warning(f"Check of user_id {user_id} failed")
+                    log_warning(f"Check of user_id {user_id} failed")
                     msg="绑定二维码已失效，请重新发送扫码绑定指令"
 
                     bot = get_bot(self_id=data["bot_id"])
@@ -397,7 +398,7 @@ async def check_qrcode():
                 if not qrbind_buffer:
                     break
             except Exception as e:
-                logger.warning(f"QR process error: {e}")
+                log_warning(f"QR process error: {e}")
                 logger.exception(e)
             finally:
                 await asyncio.sleep(1)

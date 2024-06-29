@@ -7,6 +7,8 @@ from ..apscheduler import scheduler
 
 from .srres_data_source import StarRailRes
 
+from ..logger import log_info,log_warning
+
 __plugin_meta__ = PluginMetadata(
     name="StarRailRes",
     description="崩坏：星穹铁道资源",
@@ -33,11 +35,11 @@ driver = get_driver()
 @driver.on_startup
 async def _():
     if await srres.update():
-        logger.info("游戏资源列表加载完成")
+        log_info("游戏资源列表加载完成")
     else:
         logger.error("游戏资源列表加载失败，请检查网络连接")
     scheduler.add_job(srres.update, "cron", day=1, id="srres_update")
-    logger.info("游戏资源列表自动更新任务已添加")
+    log_info("游戏资源列表自动更新任务已添加")
 
 
 sr_update = on_command(

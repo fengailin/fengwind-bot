@@ -27,35 +27,24 @@ from ..logger import log_info,log_warning
 __plugin_meta__ = PluginMetadata(
     name="StarRailBind",
     description="崩坏：星穹铁道账号绑定",
-    usage="""\
-查看绑定: sruid
-绑定UID: sruid [UID]
-清空绑定: srdel
-删除UID: srdel [UID]
-绑定cookie: srck  [COOKIE]
-扫码绑定: srqr
-""",
+    usage='',
     extra={
         "version": "1.0",
-        "srhelp": """\
-查看绑定: sruid
-绑定UID: sruid [u]UID[/u]
-清空绑定: srdel
-删除UID: srdel [u]UID[/u]
-绑定cookie: srck [u]COOKIE[/u]
-扫码绑定: srqr
-""",
     },
 )
 
 qrbind_buffer: dict[str, Any] = {}
 
 sruid = on_command(
-    "sruid", aliases={"星铁uid", "星铁绑定", "星铁账号绑定"}, priority=2, block=True
-)
+    "sruid", aliases={"星铁uid", "星铁绑定", "星铁账号绑定"}, priority=2, block=True)
+"""查看绑定: sruid
+绑定UID: sruid [UID]"""
+
+
 srck = on_command(
     "srck", aliases={"星铁ck", "srcookie", "星铁cookie"}, priority=2, block=True
 )
+"""绑定cookie: srck  [COOKIE]"""
 srpck = on_command(
     "srpck",
     aliases={"星铁pck", "srpcookie", "星铁公共cookie"},
@@ -75,13 +64,15 @@ srdel = on_command(
     priority=2,
     block=True,
 )
+"""清空绑定: srdel
+删除UID: srdel [UID]"""
 srqr = on_command(
     "srqr",
     aliases={"星铁扫码绑定"},
     priority=2,
     block=True,
 )
-
+"""扫码绑定: srqr"""
 
 @sruid.handle()
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):

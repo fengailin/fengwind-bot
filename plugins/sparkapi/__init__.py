@@ -24,9 +24,7 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/CCLMSY/nonebot-plugin-sparkapi",
     config=Config,
     supported_adapters={"~onebot.v11"},
-    extra = {
-        "author": "CCLMSY"
-    }
+    extra={'prefix': '隐藏', 'version': '1.0.0'}
 )
 
 # 获取插件配置
@@ -131,7 +129,7 @@ async def chat_handle_function(event: ME, msg: Message = CommandArg()):
 
 
 # 事件响应器：显示帮助信息
-rule_help = to_me() & funcs.trans_command(commands["help"])
+rule_help = to_me() & funcs.trans_command(commands["spark"])
 matcher_help = on_message(
     rule = rule_help,
     priority = priority_function,

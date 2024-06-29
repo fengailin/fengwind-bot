@@ -21,7 +21,7 @@ class Config(BaseModel):
     sparkapi_command_chat : str|list[str] = "" # 机器人对话指令（默认：为""且同时在`.env`中配置命令起始字符为空：COMMAND_START = [""]，即可直接对话）
     sparkapi_commands : dict[str, str|list[str]] = { # 命令
         "chat" : "", # 本条不生效，仅维持代码一致性
-        "help" : ["help","帮助"], # 显示帮助信息
+        "spark" : ["星火"], # 显示帮助信息
         "preset_show" : ["preset","人物预设"], # 显示人物预设
         "preset_set" : ["set","切换预设"], # 切换人物预设
         "preset_create" : ["create","创建预设"], # 创建人物预设
@@ -34,7 +34,7 @@ class Config(BaseModel):
     }
     sparkapi_commands_info: dict[str, str] = { # 命令说明，用于生成帮助信息
         "chat" : "与机器人进行对话",
-        "help" : "显示帮助信息",
+        "spark" : "显示帮助信息",
         "preset_show" : "显示人物预设菜单和当前预设",
         "preset_set" : "切换人物预设",
         "preset_create" : "创建人物预设",

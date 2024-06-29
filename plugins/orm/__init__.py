@@ -1,7 +1,6 @@
 from nonebot import get_driver, require
 from json import dumps
 from typing import List, Optional
-from nonebot import get_plugin_config
 from nonebot.log import logger
 from nonebot.plugin import PluginMetadata
 from tortoise import Tortoise
@@ -9,11 +8,12 @@ from tortoise import Tortoise
 from ..config import config_data
 
 __plugin_meta__ = PluginMetadata(
-    name="nonebot_plugin_tortoise_orm",
+    name="tortoise_orm",
     description="Tortoise ORM 插件",
-    usage="看文档",
+    usage="能用就行",
     type="library",
     homepage="https://github.com/kexue-z/nonebot-plugin-tortoise-orm",
+    extra={'prefix': '核心', 'version': '1.0.0'}
 )
 
 db_url = config_data['database']['database_url']

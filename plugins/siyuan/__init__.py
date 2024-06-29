@@ -93,7 +93,7 @@ listdocs = on_command("列出文档", aliases={}, priority=10, block=True)
 @listdocs.handle()
 async def handle_function(event: GroupMessageEvent):
     files_count, file_names = await listDocsByPath()
-    log_user(event, "列出文档")
+    await log_user(event, "列出文档")
     bot = get_bot()
     await bot.send(event, f"一共有{files_count}个文件, 分别名为{file_names}")
 
@@ -136,5 +136,5 @@ async def create_doc(name: Message, event: GroupMessageEvent):
         await bot.send(event, "没名字创建什么文档？")
     else:
         await createDoc(title=str(name).strip())
-        log_user(event, f"创建文档 {name}")
+        await log_user(event, f"创建文档 {name}")
         await bot.send(event, f"成功创建文档：{name}")

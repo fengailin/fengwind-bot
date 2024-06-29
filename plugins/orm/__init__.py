@@ -98,7 +98,7 @@ def add_model(model: str, db_name: Optional[str] = None, db_url: Optional[str] =
         )
     else:
         models.append(model)
-        #logger.opt(colors=True).success(f"<y>数据库: 添加模型</y>: <r>{model}</r>")
+        logger.opt(colors=True).success(f"<y>数据库: 添加模型</y>: <r>{model}</r>")
 
 from contextlib import asynccontextmanager
 from tortoise.transactions import in_transaction

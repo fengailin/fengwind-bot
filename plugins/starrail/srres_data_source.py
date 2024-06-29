@@ -124,7 +124,7 @@ class StarRailRes:
                     resp.raise_for_status()
                     return resp.content
                 except Exception as e:
-                    log_warning(f"Error downloading {url}, retry {i}/3: {e}")
+                    await log_warning(f"Error downloading {url}, retry {i}/3: {e}")
                     await asyncio.sleep(2)
             logger.error(f"Error downloading {url}, all attempts failed.")
             return None

@@ -23,24 +23,12 @@ from ..async_executor import add_async_task
 from ..epicfree.data_source import *
 config = config_data["epicfree"]["time"]
 hour, minute, second = config.split(" ")
-
+import asyncio
+from ..logger import log_plugin
 test_command = on_command("1")
 async def epic_subscribe():
-    bot = get_bot()
-    subscriber = await subscribe_helper()
-    msg_list = await get_epic_free()
-    try:
-        assert isinstance(subscriber, Dict)
-        for group in subscriber["群聊"]:
-            await cast(Bot, bot).send_group_msg(
-                    group_id=group, message=msg_list)
-        #for group in subscriber["群聊"]:
-        #    log_info("群")
-        #    await bot.send_group_msg(group_id=group, messages=msg_list)
-        #for private in subscriber["私聊"]:
-        #    await bot.send_private_msg(user_id=private, messages=msg_list)
-    except Exception as e:
-        logger.error(f"Epic 限免游戏资讯定时任务出错 {e.__class__.__name__}\n{format_exc()}")
+
+    await log_plugin("1")
 
 @test_command.handle()
 async def handle_test_task(bot: Bot, event: Event):

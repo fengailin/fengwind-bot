@@ -300,7 +300,7 @@ async def check_qrcode():
                 mys_api = MysApi()
                 status_data = await mys_api.check_login_qr(data)
                 if status_data is None:
-                    log_warning(f"Check of user_id {user_id} failed")
+                    await log_warning(f"Check of user_id {user_id} failed")
                     msg="绑定二维码已失效，请重新发送扫码绑定指令"
 
                     bot = get_bot(self_id=data["bot_id"])
@@ -398,7 +398,7 @@ async def check_qrcode():
                 if not qrbind_buffer:
                     break
             except Exception as e:
-                log_warning(f"QR process error: {e}")
+                await log_warning(f"QR process error: {e}")
                 logger.exception(e)
             finally:
                 await asyncio.sleep(1)

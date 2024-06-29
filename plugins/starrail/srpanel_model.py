@@ -285,7 +285,7 @@ async def update_score_file() -> Optional[ScoreFile]:
     if not sr_score_data:
         if not score_file.exists():
             return None
-        log_warning("Cannot get local score.json")
+        await log_warning("Cannot get local score.json")
         with open(score_file, encoding="utf-8") as f:
             sr_score_data = json.load(f)
     score = {k: type_validate_python(ScoreItem, v) for k, v in sr_score_data.items()}

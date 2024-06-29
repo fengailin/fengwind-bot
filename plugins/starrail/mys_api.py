@@ -226,8 +226,8 @@ class MysApi:
             data = json.loads(response.content or "{}")
             return str(data["data"]["device_fp"])
         except (json.JSONDecodeError, KeyError):
-            log_warning("获取 device_fp 失败，使用随机值")
-            log_warning(f"响应: {response.status_code} {response.content}")
+            await log_warning("获取 device_fp 失败，使用随机值")
+            await log_warning(f"响应: {response.status_code} {response.content}")
             return random_hex(13).lower()
 
     async def _validate(self, headers: dict[str, str], challenge: str, validate: str):
@@ -251,7 +251,7 @@ class MysApi:
         log_info("开始 upass")
         raw_data = await self.get_upass_link(headers, is_bbs)
         if raw_data is None:
-            log_warning("获取 upass 链接失败")
+            await log_warning("获取 upass 链接失败")
             return ""
         try:
             gt = raw_data["data"]["gt"]
@@ -261,10 +261,10 @@ class MysApi:
                 await self._validate(headers, challenge, validate)
                 log_info(f"挑战 upass: {challenge}")
                 return challenge
-            log_warning("获取 upass 验证失败")
+            await log_warning("获取 upass 验证失败")
             return ""
         except (json.JSONDecodeError, KeyError):
-            log_warning("处理 upass 失败")
+            await log_warning("处理 upass 失败")
             return ""
 
     async def get_upass_link(
@@ -329,8 +329,8 @@ class MysApi:
             data = json.loads(response.content or "{}")
             return data["data"]["cookie_token"]
         except (json.JSONDecodeError, KeyError):
-            log_warning("通过 stoken 获取 cookie_token 失败")
-            log_warning(f"响应: {response.status_code} {response.content}")
+            await log_warning("通过 stoken 获取 cookie_token 失败")
+            await log_warning(f"响应: {response.status_code} {response.content}")
             return None
 
     async def get_cookie_by_game_token(self, uid: int, game_token: str):
@@ -344,8 +344,8 @@ class MysApi:
         try:
             return json.loads(response.content or "{}")
         except json.JSONDecodeError:
-            log_warning("通过 game_token 获取 cookie 失败")
-            log_warning(f"响应: {response.status_code} {response.content}")
+            await log_warning("通过 game_token 获取 cookie 失败")
+            await log_warning(f"响应: {response.status_code} {response.content}")
             return None
 
     async def get_stoken_by_game_token(self, uid: int, game_token: str):
@@ -373,8 +373,8 @@ class MysApi:
         try:
             return json.loads(response.content or "{}")
         except json.JSONDecodeError:
-            log_warning("通过 game_token 获取 stoken 失败")
-            log_warning(f"响应: {response.status_code} {response.content}")
+            await log_warning("通过 game_token 获取 stoken 失败")
+            await log_warning(f"响应: {response.status_code} {response.content}")
             return None
 
     async def create_login_qr(self, app_id: int):
@@ -413,7 +413,7 @@ class MysApi:
             assert "ticket" in login_data
             assert "device" in login_data
         except AssertionError as e:
-            log_warning(f"检查二维码错误: {e}")
+            await log_warning(f"检查二维码错误: {e}")
             return None
         request = Request(
             "GET",
@@ -429,7 +429,7 @@ class MysApi:
         try:
             return json.loads(response.content or "{}")
         except json.JSONDecodeError as e:
-            log_warning(f"检查二维码错误: {e}")
+            await log_warning(f"检查二维码错误: {e}")
             return None
 
     async def get_game_basic_info(
@@ -447,7 +447,7 @@ class MysApi:
                 and game.get("game_role_id", "") == role_uid
             ):
                 return game
-        log_warning(f"在 {game_record_list} 中未找到 {role_uid=}")
+        await log_warning(f"在 {game_record_list} 中未找到 {role_uid=}")
         return None
 
     async def request(
@@ -478,8 +478,8 @@ class MysApi:
         try:
             data = json.loads(response.content or "{}")
         except json.JSONDecodeError:
-            log_warning("API 调用失败")
-            log_warning(f"响应: {response.status_code} {response.content}")
+            await log_warning("API 调用失败")
+            await log_warning(f"响应: {response.status_code} {response.content}")
             data = None
         return data
 
@@ -620,11 +620,11 @@ class MysApi:
                 retcode = int(data["retcode"])
                 risk_code = data["data"].get("risk_code") if data.get("data") else None
                 if risk_code == 5001:
-                    log_warning(f"Mys API {api} 风险 5001: {data}")
+                    await log_warning(f"Mys API {api} 风险 5001: {data}")
                     break
                 elif retcode == 1034:
-                    log_warning(f"Mys API {api} 1034: {data}")
-                    log_warning(f"headers: {headers}")
+                    await log_warning(f"Mys API {api} 1034: {data}")
+                    await log_warning(f"headers: {headers}")
                     times_try += 1
                     _, new_fp = await self.init_device(self.device_id)
                     headers["x-rpc-device_fp"] = new_fp
@@ -640,9 +640,9 @@ class MysApi:
                         body=body,
                     )
                 elif retcode != 0:
-                    log_warning(f"Mys API {api} 失败: {data}")
-                    log_warning(f"headers: {headers}")
-                    log_warning(f"params: {params}")
+                    await log_warning(f"Mys API {api} 失败: {data}")
+                    await log_warning(f"headers: {headers}")
+                    await log_warning(f"params: {params}")
                     data = retcode
                     break
                 else:
@@ -655,10 +655,10 @@ class MysApi:
                 data = None
                 break
             if times_try > 1:
-                log_warning(f"API {api} 尝试全部失败")
+                await log_warning(f"API {api} 尝试全部失败")
                 if retcode is not None:
                     data = retcode
                 break
         if data is None:
-            log_warning(f"Mys API {api} 错误")
+            await log_warning(f"Mys API {api} 错误")
         return data

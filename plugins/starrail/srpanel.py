@@ -154,7 +154,7 @@ async def _(bot: Bot, event: GroupMessageEvent, regex_dict: dict = RegexDict()):
             img = await get_srpanel_img(player_info, info, score)
         except Exception as e:
             img = None
-            log_warning(f"绘图出错：{e}")
+            await log_warning(f"绘图出错：{e}")
             logger.exception(e)
     else:
         img = None

@@ -46,11 +46,11 @@ async def reload_all_config_command(event: GroupMessageEvent):
     """
     处理重载配置命令
     """
-    #log_user(event=event, operation="重载配置")
+    #await log_user(event=event, operation="重载配置")
     success = reload_all_config()
 
     if success:
-        #log_plugin("重载配置成功")
+        #await log_plugin("重载配置成功")
         
         number_of_configs = len(config_data)
         #logger.opt(colors=True).info(f"<c><u>config</u></c> | ✅ 重载 {number_of_configs} 个配置文件")

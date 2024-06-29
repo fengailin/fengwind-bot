@@ -19,7 +19,7 @@ clear = on_command("ql", aliases={'清理缓存','清理'}, priority=10, block=T
 
 @clear.handle()
 async def _(event:GroupMessageEvent,data: Message = CommandArg()):
-    log_user(event=event,operation="清理缓存")
+    await log_user(event=event,operation="清理缓存")
     if not os.path.exists(cache_path):
         await clear.send('缓存目录不存在，无需清理。')
         return
@@ -35,7 +35,7 @@ async def _(event:GroupMessageEvent,data: Message = CommandArg()):
                 dir_path = os.path.join(root, name)
                 os.rmdir(dir_path)
                 number = number +1
-        log_plugin(f"清理缓存: {number} 个文件")
+        await log_plugin(f"清理缓存: {number} 个文件")
         await clear.send(f'清理完成\n共清理 {number} 个文件')
     except Exception as e:
         log_exception(f"清理缓存错误:{str(e)}")

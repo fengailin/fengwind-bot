@@ -83,7 +83,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         img = await get_srgacha(bot.self_id, event.get_user_id(), sr_uid)
     except Exception as e:
         img = None
-        log_warning(f"绘图出错：{e}")
+        await log_warning(f"绘图出错：{e}")
         logger.exception(e)
     if img is None:
         msg = "请先使用 导入抽卡记录 命令导入抽卡记录"

@@ -21,12 +21,12 @@ async def task_worker():
         task_id, plugin_name, task_name, task = await global_task_queue.get()
         try:
             
-            log_plugin(f"任务开始 | ID: {task_id} | 名称: {task_name} | 模块: {plugin_name}")
+            await log_plugin(f"任务开始 | ID: {task_id} | 名称: {task_name} | 模块: {plugin_name}")
             if asyncio.iscoroutine(task):
                 await task
             else:
                 await asyncio.to_thread(task)
-            log_plugin(f"任务执行成功 | ID: {task_id} | 名称: {task_name} | 模块: {plugin_name}")
+            await log_plugin(f"任务执行成功 | ID: {task_id} | 名称: {task_name} | 模块: {plugin_name}")
         except Exception as e:
             log_exception(f"任务执行出错 | ID: {task_id} | 名称: {task_name} | 模块: {plugin_name} | 错误: {traceback.format_exc()}\n")
         finally:

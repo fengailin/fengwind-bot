@@ -60,7 +60,7 @@ async def createDoc(path=None, title=None, md=""):
         response.raise_for_status()
         res = response.json()
         file_id = res['data']['id']
-        log_plugin(f"创建文档 id: {file_id}")
+        await log_plugin(f"创建文档 id: {file_id}")
         return file_id
     except Exception as e:
         log_exception(f"创建文档出错: {str(e)}")
@@ -78,7 +78,7 @@ async def insertBlock(data, previousID=None, parentID=None, nextID=None):
         response.raise_for_status()
         res = response.json()
         block_id = res['data'][0]['doOperations'][0]['id']
-        log_plugin(f"插入块 id: {block_id}")
+        await log_plugin(f"插入块 id: {block_id}")
         return block_id
     except Exception as e:
         log_exception(f"插入块出错: {str(e)}")
@@ -113,7 +113,7 @@ async def upload(path: Path, file, content_type):
         succ_map = res['data']['succMap']
         if not err_files:
             for original_name, uploaded_path in succ_map.items():
-                log_plugin(f"上传文件 路径: {uploaded_path}")
+                await log_plugin(f"上传文件 路径: {uploaded_path}")
             return succ_map
         else:
             log_exception(f"上传文件出错: {err_files}")
